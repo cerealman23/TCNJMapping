@@ -2,21 +2,41 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
+import java.util.ArrayList;
+
 public class TheCollegeOfNewJersey extends ApplicationAdapter {
+
+	protected static ArrayList<Vector2> circles = new ArrayList<>();
+	protected static ArrayList<Array<Vector2>> lines = new ArrayList<>();
+
+	private Vector3 mouseCordinates =  new Vector3();
+	protected static CreateFile filemanager = new CreateFile();
+
+
+
 	SpriteBatch batch;
 	Texture img;
 	private OrthographicCamera camera;
 	public static FillViewport viewport;
 
 	float cameraWidth, cameraHeight, worldUnits;
+
+	// Input file
+
+	OurInputProcessor inputProcessor = new OurInputProcessor();
+
 
 	Sprite sprite = new Sprite();
 
@@ -32,6 +52,10 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	@Override
 	public void create () {
 
+		Gdx.input.setInputProcessor(inputProcessor);
+
+
+
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("map.png")));
 		sprite.setPosition(0,0);
@@ -45,13 +69,6 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
 		viewport = new FillViewport(camera.viewportWidth, camera.viewportHeight, camera);
 
-		System.out.println(cameraWidth);
-
-
-
-
-
-
 		//camera.translate(0,0);
 
 		viewport.apply();
@@ -61,14 +78,26 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 	}
 
+	private void updateMouse() {
+
+		mouseCordinates.x = Gdx.input.getX();
+		mouseCordinates.y = Gdx.input.getY();
+
+
+	}
+
 	@Override
 	public void render () {
 
 
+		updateMouse();
 		camera.update();
 
+		viewport.getCamera().unproject(mouseCordinates);
+
 		ScreenUtils.clear(1, 0, 0, 1);
-	batch.setProjectionMatrix(viewport.getCamera().combined);
+
+		batch.setProjectionMatrix(viewport.getCamera().combined);
 
 		batch.begin();
 		//batch.draw(img, 0, 0);
@@ -76,6 +105,20 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		sprite.draw(batch);
 
 		batch.end();
+
+		for (Vector2 point : circles) {
+
+
+			DebugDrawer.DrawDebugCircle(point, 30, 7, Color.PURPLE, TheCollegeOfNewJersey.viewport.getCamera().combined);
+
+		}
+
+		for (Array<Vector2> point : lines) {
+
+
+			DebugDrawer.DrawDebugLine(point.get(0), point.get(1), 7, Color.PURPLE, TheCollegeOfNewJersey.viewport.getCamera().combined);
+
+		}
 
 	}
 	
