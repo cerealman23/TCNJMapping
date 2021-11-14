@@ -38,6 +38,8 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	protected static ArrayList<Array<Vector2>> lines = new ArrayList<>();
 	protected static Graph graph = new Graph();
 
+	private boolean AStartOrD = false;
+
 	private Vector3 mouseCordinates =  new Vector3();
 	protected static CreateFile filemanager = new CreateFile(graph);
 
@@ -84,6 +86,10 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	Group group;
 
 	CheckBox checkBox1, checkBox2;
+
+	String domsValue = "";
+
+	Label label;
 	
 	@Override
 	public void create () {
@@ -94,7 +100,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		newSaveAndLoad = new SaveAndLoad();
 
-		uiSkin = new Skin(Gdx.files.internal("UI\\UISet.json"));
+		uiSkin = new Skin(Gdx.files.internal("UI\\SetPathMB.json"));
 
 		final GraphMaker graphMaker = new GraphMaker(circles, lines);
 
@@ -138,6 +144,8 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 
+
+
 				inputProcessor.setStartNode();
 
 			}
@@ -157,7 +165,16 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 			public void changed(ChangeEvent event, Actor actor) {
 				System.out.println("Touched Generate");
 
-				inputProcessor.generate();
+				if (AStartOrD)
+					inputProcessor.generate();
+
+				else {
+
+					domsValue = inputProcessor.generateTxtFile() + " ";
+
+					label.setText(domsValue);
+
+				}
 			}
 		});
 
@@ -182,6 +199,25 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		CheckBox checkBox1 = new CheckBox("A* Algorithim", uiSkin, "default");
 		CheckBox checkBox2 = new CheckBox("Dykstras", uiSkin, "default");
 
+		checkBox1.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				AStartOrD = true;
+			}
+		});
+
+		checkBox2.addListener(new ChangeListener() {
+			@Override
+			public void changed (ChangeEvent event, Actor actor) {
+				AStartOrD = false;
+			}
+		});
+
+
+		TextField textField = new TextField(domsValue + ": Total lengthg of Path", uiSkin, "default");
+
+		label = new Label(domsValue, uiSkin, "default");
+
 		checkBox1.setTransform(true);
 		checkBox2.setTransform(true);
 
@@ -190,6 +226,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		save.getLabel().setFontScale(2f);
 		start.getLabel().setFontScale(2f);
 		end.getLabel().setFontScale(2f);
+
 
 		buttonGroup.add(checkBox2, checkBox1);
 
@@ -234,11 +271,12 @@ table.align(Align.center|Align.right);
 		table.add(start).width(500).height(100);
 		table.row();
 		table.add(end).width(500).height(100);
-
+		table.row();
+		table.add(label).width(500).height(100).padTop(20f);
 
 		stage.addActor(table);
 
-		table.moveBy(0, -370);
+		table.moveBy(0, -480);
 
 		//camera.translate(0,0);
 

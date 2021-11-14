@@ -63,6 +63,19 @@ public class OurInputProcessor implements InputProcessor {
 
     Node start = new Node(), end = new Node();
 
+    public float generateTxtFile() {
+
+        fileManager = new CreateFile(finalGraph);
+
+        fileManager.writeCordinates(startNode, endNode);
+
+        if (startNode != null && endNode != null)
+            return Dijkstra.calculateDijkstra();
+
+        return 0f;
+
+    }
+
     public void generate() {
 
         if (startNode != null && endNode != null) {
@@ -72,9 +85,9 @@ public class OurInputProcessor implements InputProcessor {
 
         }
 
-        fileManager = new CreateFile(finalGraph);
 
-        fileManager.writeCordinates();
+
+
 
     }
 

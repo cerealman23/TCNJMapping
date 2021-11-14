@@ -67,7 +67,7 @@ public class CreateFile {
 
     }
 
-    public final void writeCordinates() {
+    public final void writeCordinates(Node startNode, Node endNode) {
 
         try {
 
@@ -76,6 +76,7 @@ public class CreateFile {
             //writer.append((int)mouse.x +  " " + (int)mouse.y + " " + count + "\n");
 
             writer.append(graph.getNodeCount() + " " + graph.getConnectionCount() + " ");
+            writer.append(startNode.getIndex() + " " + endNode.getIndex() + " ");
 
             String finalString = "";
 
@@ -93,7 +94,7 @@ public class CreateFile {
                     float distance = new Vector2(nodes.key.getPostion().x  - values.getToNode().getPostion().x, nodes.key.getPostion().y  - values.getToNode().getPostion().y).len();
 
                     finalString+= nodes.key.getIndex() < values.getToNode().getIndex() ?
-                            nodes.key.getIndex() + " " + values.getToNode().getIndex() + " " + distance + " " : "";
+                            nodes.key.getIndex() + " " + values.getToNode().getIndex() + " " + (int)distance + " " : "";
 
 
 
