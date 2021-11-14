@@ -28,10 +28,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.mygdx.game.AI.Graph;
-import com.mygdx.game.AI.GraphMaker;
-import com.mygdx.game.AI.Node;
-import com.mygdx.game.AI.NodeConnections;
+import com.mygdx.game.AI.*;
 
 import java.util.ArrayList;
 
@@ -48,7 +45,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 	private Skin uiSkin;
 
-	private TextButton textButton, generate;
+	private TextButton textButton, generate, save, load;
 
 
 	SpriteBatch batch;
@@ -99,6 +96,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("tcnj.png")));
+		inputProcessor.setMax(sprite.getWidth());
 		sprite.setPosition(0,0);
 
 		//img = new Texture("map.png");
@@ -113,6 +111,8 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		stage = new Stage(viewport, batch);
 
 		textButton = new TextButton("Clear", uiSkin, "default");
+		save = new TextButton("Save", uiSkin, "default");
+
 
 		textButton.addListener(new ChangeListener() {
 			@Override
@@ -137,6 +137,15 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 			}
 		});
 
+		save.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+
+				SaveAndLoad newSaveAndLoad = new SaveAndLoad(graph.getCollege());
+
+			}
+		});
+
 		CheckBox checkBox1 = new CheckBox("A* Algorithim", uiSkin, "default");
 		CheckBox checkBox2 = new CheckBox("Dykstras", uiSkin, "default");
 
@@ -145,6 +154,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		checkBox1.getLabel().setFontScale(2f);
 		checkBox2.getLabel().setFontScale(2f);
+		save.getLabel().setFontScale(2f);
 
 		buttonGroup.add(checkBox2, checkBox1);
 
@@ -182,6 +192,7 @@ table.align(Align.center|Align.right);
 		table.row();
 		table.add(checkBox2);
 		table.row();
+		table.add(save).width(500).height(100).padBottom(40f);
 
 
 		stage.addActor(table);

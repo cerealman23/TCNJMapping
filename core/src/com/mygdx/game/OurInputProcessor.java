@@ -35,6 +35,9 @@ public class OurInputProcessor implements InputProcessor {
 
     private Graph finalGraph;
 
+    private float max = 0;
+
+    // Must set max seperately
     public OurInputProcessor (ArrayList<Vector2> circles, ArrayList<Array<Vector2>> lines, Graph finalGraph, GraphPath<Node> finalPath) {
 
         this.circles = circles;
@@ -49,11 +52,19 @@ public class OurInputProcessor implements InputProcessor {
 
     }
 
+    public void setMax(float max) {
+
+        this.max = max;
+
+    }
+
 
     Node start = new Node(), end = new Node();
 
     public void generate() {
-        finalGraph.setFinalPath(finalGraph.makePath(stack.get(0), stack.get(stack.size() - 1)));
+        if (stack.size() >= 2)
+            finalGraph.setFinalPath(finalGraph.makePath(stack.get(0), stack.get(stack.size() - 1)));
+
         fileManager = new CreateFile(finalGraph);
 
         fileManager.writeCordinates();
@@ -65,7 +76,8 @@ public class OurInputProcessor implements InputProcessor {
         college.clear();
         finalGraph.clear();
         stack.clear();
-        finalGraph.getFinalPath().clear();
+        if (finalGraph.getFinalPath() != null)
+            finalGraph.getFinalPath().clear();
 
     }
 
@@ -103,37 +115,39 @@ public class OurInputProcessor implements InputProcessor {
 
         Vector2 cord2 = new Vector2(cords.x, cords.y);
 
-        if (button == Input.Buttons.LEFT) {
+        if (cord2.x < max) {
+
+            if (button == Input.Buttons.LEFT) {
 
 
+                CreateFile.createFile();
 
-            CreateFile.createFile();
+                // fileManager.writeCordinates(new Vector2(screenX, screenY));
 
-           // fileManager.writeCordinates(new Vector2(screenX, screenY));
+                // Adds a new node to the college map
+                Node delete = new Node(cord2);
 
-            // Adds a new node to the college map
-            Node delete = new Node(cord2);
+                stack.add(delete);
 
-            stack.add(delete);
-
-            college.put(delete, new Array<Connection<Node>>());
-
+                college.put(delete, new Array<Connection<Node>>());
 
 
-           //circles.add(cord2);
+                //circles.add(cord2);
 
-            return true;
-        }
+                return true;
+            }
 
-        if (button == Input.Buttons.RIGHT) {
+            if (button == Input.Buttons.RIGHT) {
 
-            // snaps to closest node
+                // snaps to closest node
 
                 start = (MathFunctions.edgeSnap(cord2, college));
 
                 System.out.println("Clicked");
 
-            return true;
+                return true;
+            }
+
         }
 
         return false;
