@@ -22,6 +22,8 @@ public class OurInputProcessor implements InputProcessor {
 
     ArrayList<Node> graph = new ArrayList<>();
 
+    private Node startNode, endNode;
+
     ArrayList<Node> stack = new ArrayList<>();
 
     ObjectMap<Node, Array<Connection<Node>>> college = new ObjectMap<>();
@@ -62,12 +64,33 @@ public class OurInputProcessor implements InputProcessor {
     Node start = new Node(), end = new Node();
 
     public void generate() {
-        if (stack.size() >= 2)
-            finalGraph.setFinalPath(finalGraph.makePath(stack.get(0), stack.get(stack.size() - 1)));
+
+        if (startNode != null && endNode != null) {
+
+            if (stack.size() >= 2)
+                finalGraph.setFinalPath(finalGraph.makePath(startNode, endNode));
+
+        }
 
         fileManager = new CreateFile(finalGraph);
 
         fileManager.writeCordinates();
+
+    }
+
+    private boolean setStartNode = false, setEndNode = false;
+
+    public void setStartNode() {
+
+        setStartNode = true;
+        setEndNode = false;
+
+    }
+
+    public void setEndNode() {
+
+        setEndNode = true;
+        setStartNode = false;
 
     }
 
@@ -117,7 +140,21 @@ public class OurInputProcessor implements InputProcessor {
 
         if (cord2.x < max) {
 
-            if (button == Input.Buttons.LEFT) {
+            if (button == Input.Buttons.LEFT && setStartNode) {
+
+                startNode = MathFunctions.edgeSnap(cord2, college);
+                finalGraph.setStart(startNode);
+                setStartNode = false;
+
+            } else if (button == Input.Buttons.LEFT && setEndNode) {
+
+                endNode = MathFunctions.edgeSnap(cord2, college);
+                finalGraph.setEnd(endNode);
+                setEndNode = false;
+
+            }
+
+            else if (button == Input.Buttons.LEFT) {
 
 
                 CreateFile.createFile();

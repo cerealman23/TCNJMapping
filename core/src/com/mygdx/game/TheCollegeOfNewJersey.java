@@ -43,9 +43,11 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 	private GraphPath<Node> finalPath;
 
+	SaveAndLoad newSaveAndLoad;
+
 	private Skin uiSkin;
 
-	private TextButton textButton, generate, save, load;
+	private TextButton textButton, generate, save, load, start, end;
 
 
 	SpriteBatch batch;
@@ -90,6 +92,8 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		table = new Table();
 
+		newSaveAndLoad = new SaveAndLoad();
+
 		uiSkin = new Skin(Gdx.files.internal("UI\\UISet.json"));
 
 		final GraphMaker graphMaker = new GraphMaker(circles, lines);
@@ -111,7 +115,10 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		stage = new Stage(viewport, batch);
 
 		textButton = new TextButton("Clear", uiSkin, "default");
+		start = new TextButton("Start", uiSkin, "default");
+		end = new TextButton("End", uiSkin, "default");
 		save = new TextButton("Save", uiSkin, "default");
+		load = new TextButton("Load", uiSkin, "default");
 
 
 		textButton.addListener(new ChangeListener() {
@@ -127,6 +134,23 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		generate = new TextButton("Generate", uiSkin, "default");
 
+		start.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+
+				inputProcessor.setStartNode();
+
+			}
+		});
+
+		end.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+
+				inputProcessor.setEndNode();
+
+			}
+		});
 
 		generate.addListener(new ChangeListener() {
 			@Override
@@ -141,7 +165,16 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 			@Override
 			public void changed(ChangeEvent event, Actor actor) {
 
-				SaveAndLoad newSaveAndLoad = new SaveAndLoad(graph.getCollege());
+				newSaveAndLoad.save(graph.getCollege());
+
+			}
+		});
+
+		load.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+
+				graph.setCollege(newSaveAndLoad.load());
 
 			}
 		});
@@ -155,6 +188,8 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		checkBox1.getLabel().setFontScale(2f);
 		checkBox2.getLabel().setFontScale(2f);
 		save.getLabel().setFontScale(2f);
+		start.getLabel().setFontScale(2f);
+		end.getLabel().setFontScale(2f);
 
 		buttonGroup.add(checkBox2, checkBox1);
 
@@ -182,7 +217,7 @@ table.align(Align.center|Align.right);
 
 
 
-		table.add(textButton).width(500).height(100).padBottom(40f);
+		table.add(textButton).width(500).height(100).padBottom(200f);
 		table.row();
 		table.add(generate).width(500).height(100).padBottom(400f);
 		table.padTop(900f);
@@ -193,9 +228,17 @@ table.align(Align.center|Align.right);
 		table.add(checkBox2);
 		table.row();
 		table.add(save).width(500).height(100).padBottom(40f);
+		table.row();
+		table.add(load).width(500f).height(100f).padBottom(400f);
+		table.row();
+		table.add(start).width(500).height(100);
+		table.row();
+		table.add(end).width(500).height(100);
 
 
 		stage.addActor(table);
+
+		table.moveBy(0, -370);
 
 		//camera.translate(0,0);
 
@@ -237,7 +280,7 @@ table.align(Align.center|Align.right);
 
 		viewport.getCamera().unproject(mouseCordinates);
 
-		ScreenUtils.clear(0, 0, 0, 1);
+		ScreenUtils.clear(107/255f, 107/255f, 107/255f, 0);
 
 		batch.setProjectionMatrix(viewport.getCamera().combined);
 
@@ -253,6 +296,13 @@ table.align(Align.center|Align.right);
 
 		stage.draw();
 
+		if (graph.getStart() != null)
+
+		DebugDrawer.DrawDebugCircle(graph.getStart().getPostion(), 40, 7, Color.GREEN, TheCollegeOfNewJersey.viewport.getCamera().combined);
+
+		if (graph.getEnd() != null)
+
+		DebugDrawer.DrawDebugCircle(graph.getEnd().getPostion(), 40, 7, Color.BLUE, TheCollegeOfNewJersey.viewport.getCamera().combined);
 
 		for (ObjectMap.Entry<Node, Array<Connection<Node>>> nodes : graph.getCollege().entries())
 
@@ -278,9 +328,12 @@ table.align(Align.center|Align.right);
 
 		if (graph.getFinalPath() != null) {
 
-			for (Node node : graph.getFinalPath()) {
+			for (int i = 1; i < graph.getFinalPath().getCount(); ++i) {
 
-				DebugDrawer.DrawDebugCircle(node.getPostion(), 30, 7, Color.RED, TheCollegeOfNewJersey.viewport.getCamera().combined);
+				Node prevNode = graph.getFinalPath().get(i - 1);
+				Node thisNode = graph.getFinalPath().get(i);
+
+				DebugDrawer.DrawDebugLine(prevNode.getPostion(), thisNode.getPostion(), 10, Color.CYAN, TheCollegeOfNewJersey.viewport.getCamera().combined);
 
 			}
 

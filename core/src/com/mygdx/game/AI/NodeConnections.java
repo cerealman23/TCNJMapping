@@ -5,9 +5,15 @@ import com.badlogic.gdx.ai.pfa.Connection;
 
 public class NodeConnections implements Connection<Node> {
 
-    Node fromNode;
-    Node toNode;
+    transient Node fromNode;
+    transient Node toNode;
     float cost;
+
+    public NodeConnections() {
+
+
+
+    }
 
     public NodeConnections(Node fromNode, Node toNode) {
 

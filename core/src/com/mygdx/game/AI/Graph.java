@@ -19,6 +19,8 @@ public class Graph implements IndexedGraph<Node> {
 
     ArrayList<Node> list;
 
+    private Node start = null, end = null;
+
     GraphPath<Node> finalPath;
 
     ObjectMap<Node, Array<Connection<Node>>> college = new ObjectMap<>();
@@ -33,6 +35,22 @@ public class Graph implements IndexedGraph<Node> {
         new IndexedAStarPathFinder<Node>(this).searchNodePath(start, end, heuristic, defPath);
         return defPath;
 
+    }
+
+    public Node getEnd() {
+        return end;
+    }
+
+    public Node getStart() {
+        return start;
+    }
+
+    public void setStart(Node start) {
+        this.start = start;
+    }
+
+    public void setEnd(Node end) {
+        this.end = end;
     }
 
     public void setFinalPath(GraphPath<Node> finalPath) {
