@@ -5,6 +5,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
@@ -16,7 +17,6 @@ import com.mygdx.game.AI.NodeConnections;
 import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.Stack;
-
 
 public class OurInputProcessor implements InputProcessor {
 
@@ -31,10 +31,11 @@ public class OurInputProcessor implements InputProcessor {
     private CreateFile fileManager;
     private GraphPath<Node> finalPath;
 
+    private OrthographicCamera camera;
 
     private Graph finalGraph;
 
-    public OurInputProcessor (ArrayList<Vector2> circles, ArrayList<Array<Vector2>> lines, CreateFile fileManager, Graph finalGraph, GraphPath<Node> finalPath) {
+    public OurInputProcessor (ArrayList<Vector2> circles, ArrayList<Array<Vector2>> lines, Graph finalGraph, GraphPath<Node> finalPath) {
 
         this.circles = circles;
         this.lines = lines;
@@ -42,6 +43,7 @@ public class OurInputProcessor implements InputProcessor {
         this.finalPath = finalPath;
 
         this.finalGraph = finalGraph;
+        this.camera = camera;
 
         finalGraph.setCollege(college);
 
@@ -50,14 +52,15 @@ public class OurInputProcessor implements InputProcessor {
 
     Node start = new Node(), end = new Node();
 
-
     @Override
     public boolean keyDown(int keycode) {
 
         if (keycode == Input.Keys.SPACE) {
 
             finalGraph.setFinalPath(finalGraph.makePath(stack.get(0), stack.get(stack.size() - 1)));
+            fileManager = new CreateFile(finalGraph);
 
+            fileManager.writeCordinates();
 
         }
 
@@ -91,7 +94,7 @@ public class OurInputProcessor implements InputProcessor {
 
             CreateFile.createFile();
 
-            fileManager.writeCordinates(new Vector2(screenX, screenY));
+           // fileManager.writeCordinates(new Vector2(screenX, screenY));
 
             // Adds a new node to the college map
             Node delete = new Node(cord2);
@@ -156,8 +159,20 @@ public class OurInputProcessor implements InputProcessor {
         return false;
     }
 
+    private float zoomValues = 0;
+
+    public float zoomValue() {
+
+
+        return zoomValues;
+
+    }
+
     @Override
     public boolean scrolled(float amountX, float amountY) {
+
+        zoomValues += amountX;
+
         return false;
     }
 }

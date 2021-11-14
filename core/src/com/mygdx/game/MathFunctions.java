@@ -20,7 +20,6 @@ public class MathFunctions {
         for (ObjectMap.Entry<Node, Array<Connection<Node>>> nodes : nodesInMap.entries()) {
 
             float distance = (new Vector2(nodes.key.getPostion().x - start.x, nodes.key.getPostion().y - start.y)).len();
-            
 
             if (distance < min) {
 
@@ -29,10 +28,7 @@ public class MathFunctions {
 
             }
 
-
         }
-
-
 
         return returnNode;
 

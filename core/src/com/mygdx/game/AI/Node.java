@@ -14,13 +14,20 @@ public class Node {
 
 
     }
+
+    private void setIndex() {
+
+        this.index = count;
+        count++;
+
+    }
+
     public Node(float x, float y) {
 
         this.x = x;
         this.y = y;
         this.postion = new Vector2(x,y);
-        this.index = count;
-        count++;
+        setIndex();
 
     }
 
@@ -29,8 +36,7 @@ public class Node {
         this.x = vector.x;
         this.y = vector.y;
         this.postion = new Vector2(x,y);
-        this.index = count;
-        count++;
+        setIndex();
 
     }
 

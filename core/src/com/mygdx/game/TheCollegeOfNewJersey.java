@@ -11,11 +11,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.mygdx.game.AI.Graph;
@@ -32,7 +34,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	protected static Graph graph = new Graph();
 
 	private Vector3 mouseCordinates =  new Vector3();
-	protected static CreateFile filemanager = new CreateFile();
+	protected static CreateFile filemanager = new CreateFile(graph);
 
 	private GraphPath<Node> finalPath;
 
@@ -41,13 +43,13 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
 	private OrthographicCamera camera;
-	public static FillViewport viewport;
+	public static ExtendViewport viewport;
 
 	float cameraWidth, cameraHeight, worldUnits;
 
 	// Input file
 
-	OurInputProcessor inputProcessor = new OurInputProcessor(circles, lines, filemanager, graph, finalPath);
+	OurInputProcessor inputProcessor = new OurInputProcessor(circles, lines, graph, finalPath);
 
 
 	Sprite sprite = new Sprite();
@@ -69,7 +71,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		GraphMaker graphMaker = new GraphMaker(circles, lines);
 
 		batch = new SpriteBatch();
-		sprite = new Sprite(new Texture(Gdx.files.internal("map.png")));
+		sprite = new Sprite(new Texture(Gdx.files.internal("tcnj.png")));
 		sprite.setPosition(0,0);
 
 		//img = new Texture("map.png");
@@ -79,7 +81,9 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		camera = new OrthographicCamera(cameraWidth, cameraHeight);
 		camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
-		viewport = new FillViewport(camera.viewportWidth, camera.viewportHeight, camera);
+		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
+
+
 
 		//camera.translate(0,0);
 
@@ -96,6 +100,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		mouseCordinates.x = Gdx.input.getX();
 		mouseCordinates.y = Gdx.input.getY();
+		viewport.getCamera().unproject(mouseCordinates);
 
 
 	}
@@ -107,6 +112,8 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		updateMouse();
 		camera.update();
+
+		//camera.zoom += inputProcessor.zoomValue();
 
 		viewport.getCamera().unproject(mouseCordinates);
 
@@ -153,11 +160,6 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 			}
 
 		}
-
-
-
-
-
 
 	}
 	

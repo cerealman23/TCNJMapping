@@ -1,7 +1,12 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
+import com.mygdx.game.AI.Graph;
+import com.mygdx.game.AI.Node;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,19 +15,26 @@ public class CreateFile {
 
     int count = 0;
 
-    public CreateFile() {
+    private Graph graph;
+
+    public CreateFile(Graph graph) {
+
+        this.graph = graph;
 
         try {
 
             writer = new FileWriter("C:\\Users\\mango\\Documents\\MLH\\android\\assets\\textFiles\\nodes.txt");
 
-            System.out.println("Succesfuly Wrote to a file");
+            System.out.println("Wrote");
+
+
 
         } catch (Exception ecx) {
 
             System.out.println("Couldn't write");
 
         }
+
 
     }
 
@@ -55,11 +67,48 @@ public class CreateFile {
 
     }
 
-    public final void writeCordinates(Vector2 mouse) {
+    public final void writeCordinates() {
 
         try {
 
-            writer.append((int)mouse.x +  " " + (int)mouse.y + " " + count + "\n");
+
+
+            //writer.append((int)mouse.x +  " " + (int)mouse.y + " " + count + "\n");
+
+            writer.append(graph.getNodeCount() + " " + graph.getConnectionCount() + " ");
+
+            String finalString = "";
+
+            // Gets node
+            for (ObjectMap.Entry<Node, Array<Connection<Node>>> nodes : graph.getCollege().entries()) {
+
+                finalString = "";
+
+                //finalString += nodes.key.getIndex();
+
+
+                for (Connection<Node> values : nodes.value) {
+
+                    // Calculate weight
+                    float distance = new Vector2(nodes.key.getPostion().x  - values.getToNode().getPostion().x, nodes.key.getPostion().y  - values.getToNode().getPostion().y).len();
+
+                    finalString+= nodes.key.getIndex() < values.getToNode().getIndex() ?
+                            nodes.key.getIndex() + " " + values.getToNode().getIndex() + " " + distance + " " : "";
+
+
+
+                }
+
+                writer.append(finalString);
+
+            }
+
+
+            // Start Node
+
+
+            // End Node
+
             count++;
 
             writer.flush();

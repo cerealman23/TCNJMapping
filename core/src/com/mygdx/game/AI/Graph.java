@@ -6,9 +6,12 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedGraph;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
+import com.mygdx.game.DebugDrawer;
+import com.mygdx.game.TheCollegeOfNewJersey;
 
 import java.util.ArrayList;
 
@@ -18,7 +21,7 @@ public class Graph implements IndexedGraph<Node> {
 
     GraphPath<Node> finalPath;
 
-    ObjectMap<Node, Array<Connection<Node>>> college;
+    ObjectMap<Node, Array<Connection<Node>>> college = new ObjectMap<>();
     ArrayList<NodeConnections> edges = new ArrayList<>();     // All edges in the graph
 
     MyHeuristic heuristic = new MyHeuristic();
@@ -104,6 +107,22 @@ public class Graph implements IndexedGraph<Node> {
         System.out.println("No Connections ::Graph.java::");
 
         return new Array<>(0);
+
+    }
+
+    public int getConnectionCount() {
+
+        int count = 0;
+
+        for (ObjectMap.Entry<Node, Array<Connection<Node>>> nodes : college.entries()) {
+
+            count += nodes.value.size;
+
+        }
+
+        return count / 2;   // Divide by two because current graph is bi directional
+
+
 
     }
 }
