@@ -52,17 +52,32 @@ public class OurInputProcessor implements InputProcessor {
 
     Node start = new Node(), end = new Node();
 
+    public void generate() {
+        finalGraph.setFinalPath(finalGraph.makePath(stack.get(0), stack.get(stack.size() - 1)));
+        fileManager = new CreateFile(finalGraph);
+
+        fileManager.writeCordinates();
+
+    }
+
+    public void clear() {
+
+        college.clear();
+        finalGraph.clear();
+        stack.clear();
+        finalGraph.getFinalPath().clear();
+
+    }
+
+
     @Override
     public boolean keyDown(int keycode) {
 
-        if (keycode == Input.Keys.SPACE) {
 
-            finalGraph.setFinalPath(finalGraph.makePath(stack.get(0), stack.get(stack.size() - 1)));
-            fileManager = new CreateFile(finalGraph);
 
-            fileManager.writeCordinates();
 
-        }
+
+
 
         return false;
     }

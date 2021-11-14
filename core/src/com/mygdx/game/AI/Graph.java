@@ -125,4 +125,11 @@ public class Graph implements IndexedGraph<Node> {
 
 
     }
+
+    public void clear() {
+
+        college.clear();
+        Node.count = 0;
+
+    }
 }

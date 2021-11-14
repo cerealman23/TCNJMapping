@@ -16,9 +16,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
@@ -76,6 +78,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 	Stage stage;
 
+	ButtonGroup buttonGroup;
 
 	Table table;
 
@@ -86,11 +89,13 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	@Override
 	public void create () {
 
+		buttonGroup = new ButtonGroup();
+
 		table = new Table();
 
 		uiSkin = new Skin(Gdx.files.internal("UI\\UISet.json"));
 
-		GraphMaker graphMaker = new GraphMaker(circles, lines);
+		final GraphMaker graphMaker = new GraphMaker(circles, lines);
 
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("tcnj.png")));
@@ -107,11 +112,48 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
 		stage = new Stage(viewport, batch);
 
-		textButton = new TextButton("Bruh", uiSkin, "default");
+		textButton = new TextButton("Clear", uiSkin, "default");
+
+		textButton.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				System.out.println("Touched Generate");
+
+				inputProcessor.clear();
+
+			}
+		});
+
+
 		generate = new TextButton("Generate", uiSkin, "default");
+
+
+		generate.addListener(new ChangeListener() {
+			@Override
+			public void changed(ChangeEvent event, Actor actor) {
+				System.out.println("Touched Generate");
+
+				inputProcessor.generate();
+			}
+		});
 
 		CheckBox checkBox1 = new CheckBox("A* Algorithim", uiSkin, "default");
 		CheckBox checkBox2 = new CheckBox("Dykstras", uiSkin, "default");
+
+		checkBox1.setTransform(true);
+		checkBox2.setTransform(true);
+
+		checkBox1.getLabel().setFontScale(2f);
+		checkBox2.getLabel().setFontScale(2f);
+
+		buttonGroup.add(checkBox2, checkBox1);
+
+		buttonGroup.setMaxCheckCount(1);
+		buttonGroup.setMinCheckCount(0);
+
+		buttonGroup.uncheckAll();
+
+		buttonGroup.setUncheckLast(true);
 
 		table.setTransform(true);
 
@@ -136,9 +178,10 @@ table.align(Align.center|Align.right);
 		table.padTop(900f);
 		table.padRight(70f);
 		table.row();
-		table.add(checkBox1);
+		table.add(checkBox1).width(500);
 		table.row();
 		table.add(checkBox2);
+		table.row();
 
 
 		stage.addActor(table);
@@ -147,10 +190,12 @@ table.align(Align.center|Align.right);
 
 		viewport.apply();
 
-		multiplexer.addProcessor(inputProcessor);
-		multiplexer.addProcessor(stage);
 
-		Gdx.input.setInputProcessor(stage);
+		multiplexer.addProcessor(stage);
+		multiplexer.addProcessor(inputProcessor);
+
+
+		Gdx.input.setInputProcessor(multiplexer);
 
 
 
