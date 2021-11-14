@@ -2,6 +2,10 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.Connection;
+import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
+import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -10,9 +14,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FillViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.mygdx.game.AI.Graph;
+import com.mygdx.game.AI.GraphMaker;
+import com.mygdx.game.AI.Node;
+import com.mygdx.game.AI.NodeConnections;
 
 import java.util.ArrayList;
 
@@ -20,9 +29,12 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 	protected static ArrayList<Vector2> circles = new ArrayList<>();
 	protected static ArrayList<Array<Vector2>> lines = new ArrayList<>();
+	protected static Graph graph = new Graph();
 
 	private Vector3 mouseCordinates =  new Vector3();
 	protected static CreateFile filemanager = new CreateFile();
+
+	private GraphPath<Node> finalPath;
 
 
 
@@ -35,7 +47,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 	// Input file
 
-	OurInputProcessor inputProcessor = new OurInputProcessor();
+	OurInputProcessor inputProcessor = new OurInputProcessor(circles, lines, filemanager, graph, finalPath);
 
 
 	Sprite sprite = new Sprite();
@@ -54,7 +66,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		Gdx.input.setInputProcessor(inputProcessor);
 
-
+		GraphMaker graphMaker = new GraphMaker(circles, lines);
 
 		batch = new SpriteBatch();
 		sprite = new Sprite(new Texture(Gdx.files.internal("map.png")));
@@ -76,6 +88,8 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 
 
+
+
 	}
 
 	private void updateMouse() {
@@ -85,6 +99,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 
 	}
+
 
 	@Override
 	public void render () {
@@ -106,19 +121,43 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		batch.end();
 
-		for (Vector2 point : circles) {
+
+		for (ObjectMap.Entry<Node, Array<Connection<Node>>> nodes : graph.getCollege().entries())
 
 
-			DebugDrawer.DrawDebugCircle(point, 30, 7, Color.PURPLE, TheCollegeOfNewJersey.viewport.getCamera().combined);
+			DebugDrawer.DrawDebugCircle(nodes.key.getPostion(), 30, 7, Color.PURPLE, TheCollegeOfNewJersey.viewport.getCamera().combined);
+
+
+
+		for (ObjectMap.Entry<Node, Array<Connection<Node>>> nodes : graph.getCollege().entries()) {
+
+
+
+			for (Connection<Node> connection : nodes.value) {
+
+				
+				DebugDrawer.DrawDebugLine(connection.getToNode().getPostion() , connection.getFromNode().getPostion(), 7, Color.PURPLE, TheCollegeOfNewJersey.viewport.getCamera().combined);
+
+			}
+
+
 
 		}
 
-		for (Array<Vector2> point : lines) {
+		if (graph.getFinalPath() != null) {
 
+			for (Node node : graph.getFinalPath()) {
 
-			DebugDrawer.DrawDebugLine(point.get(0), point.get(1), 7, Color.PURPLE, TheCollegeOfNewJersey.viewport.getCamera().combined);
+				DebugDrawer.DrawDebugCircle(node.getPostion(), 30, 7, Color.RED, TheCollegeOfNewJersey.viewport.getCamera().combined);
+
+			}
 
 		}
+
+
+
+
+
 
 	}
 	
