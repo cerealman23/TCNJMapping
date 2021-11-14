@@ -2,6 +2,8 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
 import com.badlogic.gdx.ai.pfa.GraphPath;
@@ -14,6 +16,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ObjectMap;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -38,6 +44,9 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 	private GraphPath<Node> finalPath;
 
+	private Skin uiSkin;
+
+	private TextButton textButton, generate;
 
 
 	SpriteBatch batch;
@@ -50,6 +59,7 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	// Input file
 
 	OurInputProcessor inputProcessor = new OurInputProcessor(circles, lines, graph, finalPath);
+	InputMultiplexer multiplexer = new InputMultiplexer();
 
 
 	Sprite sprite = new Sprite();
@@ -62,11 +72,23 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 	}
 
+	//ButtonGroup buttonGroup = new ButtonGroup();
+
+	Stage stage;
+
+
+	Table table;
+
+	Group group;
+
+	CheckBox checkBox1, checkBox2;
 	
 	@Override
 	public void create () {
 
-		Gdx.input.setInputProcessor(inputProcessor);
+		table = new Table();
+
+		uiSkin = new Skin(Gdx.files.internal("UI\\UISet.json"));
 
 		GraphMaker graphMaker = new GraphMaker(circles, lines);
 
@@ -81,14 +103,54 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		camera = new OrthographicCamera(cameraWidth, cameraHeight);
 		camera.position.set(camera.viewportWidth/2,camera.viewportHeight/2,0);
+
 		viewport = new ExtendViewport(camera.viewportWidth, camera.viewportHeight, camera);
+		stage = new Stage(viewport, batch);
+
+		textButton = new TextButton("Bruh", uiSkin, "default");
+		generate = new TextButton("Generate", uiSkin, "default");
+
+		CheckBox checkBox1 = new CheckBox("A* Algorithim", uiSkin, "default");
+		CheckBox checkBox2 = new CheckBox("Dykstras", uiSkin, "default");
+
+		table.setTransform(true);
+
+		textButton.getLabel().setFontScale(4f);
 
 
+		generate.getLabel().setFontScale(4f);
+
+		generate.setTransform(true);
+table.setPosition(0, Gdx.graphics.getHeight());
+
+//table.scaleBy(5f);
+
+table.setWidth(stage.getWidth());
+table.align(Align.center|Align.right);
+
+
+
+		table.add(textButton).width(500).height(100).padBottom(40f);
+		table.row();
+		table.add(generate).width(500).height(100).padBottom(400f);
+		table.padTop(900f);
+		table.padRight(70f);
+		table.row();
+		table.add(checkBox1);
+		table.row();
+		table.add(checkBox2);
+
+
+		stage.addActor(table);
 
 		//camera.translate(0,0);
 
 		viewport.apply();
 
+		multiplexer.addProcessor(inputProcessor);
+		multiplexer.addProcessor(stage);
+
+		Gdx.input.setInputProcessor(stage);
 
 
 
@@ -110,6 +172,8 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	public void render () {
 
 
+
+
 		updateMouse();
 		camera.update();
 
@@ -117,16 +181,21 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 
 		viewport.getCamera().unproject(mouseCordinates);
 
-		ScreenUtils.clear(1, 0, 0, 1);
+		ScreenUtils.clear(0, 0, 0, 1);
 
 		batch.setProjectionMatrix(viewport.getCamera().combined);
 
 		batch.begin();
 		//batch.draw(img, 0, 0);
 
+
 		sprite.draw(batch);
 
+
+
 		batch.end();
+
+		stage.draw();
 
 
 		for (ObjectMap.Entry<Node, Array<Connection<Node>>> nodes : graph.getCollege().entries())
