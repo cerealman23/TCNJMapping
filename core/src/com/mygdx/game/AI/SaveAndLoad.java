@@ -22,6 +22,7 @@ public class SaveAndLoad {
 
     public SaveAndLoad() {
 
+        fileForConnections = new FileHandle(new File("C:\\Users\\mango\\Desktop\\JSON\\file2.json"));
 
 
     }
@@ -42,7 +43,7 @@ public class SaveAndLoad {
         }
 
         file = new FileHandle(new File("C:\\Users\\mango\\Desktop\\JSON\\file1.json"));
-        fileForConnections = new FileHandle(new File("C:\\Users\\mango\\Desktop\\JSON\\file2.json"));
+
 
         Json json = new Json();
         json.setOutputType(JsonWriter.OutputType.json);
@@ -69,12 +70,7 @@ public class SaveAndLoad {
 
     public ObjectMap<Node, Array<Connection<Node>>> load() {
 
-
-
         //Map<String, Object> map = new Gson().fromJson(json, Map.class);
-
-
-
 
         Json json1 = new Json();
 

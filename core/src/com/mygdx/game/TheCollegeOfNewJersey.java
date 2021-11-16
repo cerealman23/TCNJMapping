@@ -41,7 +41,6 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	private boolean AStartOrD = false;
 
 	private Vector3 mouseCordinates =  new Vector3();
-	protected static CreateFile filemanager = new CreateFile(graph);
 
 	private GraphPath<Node> finalPath;
 
@@ -90,9 +89,14 @@ public class TheCollegeOfNewJersey extends ApplicationAdapter {
 	String domsValue = "";
 
 	Label label;
+
+	Sprite mapSprite = new Sprite();
 	
 	@Override
 	public void create () {
+
+		mapSprite = new Sprite(new Texture(Gdx.files.internal("tcnj_mapping.png")));
+		mapSprite.setBounds(0,0, mapSprite.getTexture().getWidth(), mapSprite.getTexture().getHeight());
 
 		buttonGroup = new ButtonGroup();
 
@@ -328,6 +332,8 @@ table.align(Align.center|Align.right);
 
 		sprite.draw(batch);
 
+		//mapSprite.draw(batch);
+
 
 
 		batch.end();
@@ -340,7 +346,7 @@ table.align(Align.center|Align.right);
 
 		if (graph.getEnd() != null)
 
-		DebugDrawer.DrawDebugCircle(graph.getEnd().getPostion(), 40, 7, Color.BLUE, TheCollegeOfNewJersey.viewport.getCamera().combined);
+		DebugDrawer.DrawDebugCircle(graph.getEnd().getPostion(), 40, 7, Color.RED, TheCollegeOfNewJersey.viewport.getCamera().combined);
 
 		for (ObjectMap.Entry<Node, Array<Connection<Node>>> nodes : graph.getCollege().entries())
 

@@ -30,7 +30,6 @@ public class OurInputProcessor implements InputProcessor {
 
     private ArrayList<Vector2> circles;
     private ArrayList<Array<Vector2>> lines;
-    private CreateFile fileManager;
     private GraphPath<Node> finalPath;
 
     private OrthographicCamera camera;
@@ -44,7 +43,7 @@ public class OurInputProcessor implements InputProcessor {
 
         this.circles = circles;
         this.lines = lines;
-        this.fileManager = fileManager;
+
         this.finalPath = finalPath;
 
         this.finalGraph = finalGraph;
@@ -65,12 +64,9 @@ public class OurInputProcessor implements InputProcessor {
 
     public float generateTxtFile() {
 
-        fileManager = new CreateFile(finalGraph);
-
-        fileManager.writeCordinates(startNode, endNode);
 
         if (startNode != null && endNode != null)
-            return Dijkstra.calculateDijkstra();
+            return 666;
 
         return 0f;
 
@@ -112,6 +108,9 @@ public class OurInputProcessor implements InputProcessor {
         college.clear();
         finalGraph.clear();
         stack.clear();
+        finalGraph.setStart(null);
+        finalGraph.setEnd(null);
+        endNode = null;
         if (finalGraph.getFinalPath() != null)
             finalGraph.getFinalPath().clear();
 
@@ -169,8 +168,6 @@ public class OurInputProcessor implements InputProcessor {
 
             else if (button == Input.Buttons.LEFT) {
 
-
-                CreateFile.createFile();
 
                 // fileManager.writeCordinates(new Vector2(screenX, screenY));
 
