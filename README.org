@@ -1,0 +1,5 @@
+* This is a project made by Malcolm, Kira, Rob, and Dom during hackdown 2021
+
+- The final product from this hackdown us under the hackdown2021 branch
+
+- The source code can be found under   //core/src/com/mygdx/game/:
